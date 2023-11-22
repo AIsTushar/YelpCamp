@@ -1,0 +1,79 @@
+<%layout('layouts/Boilerplate') %>
+
+<h1 class="text-center">New Campground</h1>
+<div class="col-6 offset-3">
+  <form
+    action="/campgrounds"
+    method="POST"
+    class="valoidated-form"
+    enctype="multipart/form-data"
+    novalidate
+  >
+    <!-- Title -->
+    <div class="mb-3">
+      <label class="form-label" for="title">Title</label>
+      <input
+        class="form-control"
+        type="text"
+        name="campground[title]"
+        id="title"
+        required
+      />
+    </div>
+    <!-- Location -->
+    <div class="mb-3">
+      <label class="form-label" for="location">location</label>
+      <input
+        class="form-control"
+        type="text"
+        name="campground[location]"
+        id="location"
+        required
+      />
+    </div>
+    <!-- Image -->
+
+    <div class="mb-3">
+      <label class="form-label" for="image">Uplaod Images</label>
+      <input
+        class="form-control"
+        type="file"
+        name="campground[image]"
+        id="image"
+        multiple
+      />
+    </div>
+    <!-- price -->
+    <div class="mb-3">
+      <label class="form-label" for="location">Campground Price</label>
+      <div class="input-group">
+        <span class="input-group-text" id="price-label">$</span>
+        <input
+          class="form-control"
+          type="text"
+          name="campground[price]"
+          placeholder="0.00"
+          id="price"
+          aria-label="price-label"
+          aria-describedby="price-label"
+          required
+        />
+      </div>
+    </div>
+    <!-- Description -->
+    <div class="mb-3">
+      <label class="form-label" for="description">Description</label>
+      <textarea
+        class="form-control"
+        type="text"
+        id="description"
+        name="campground[description]"
+        required
+      ></textarea>
+    </div>
+    <div class="mb-3">
+      <button class="btn btn-success">Create</button>
+    </div>
+  </form>
+  <a href="/campgrounds">All Campgrounds</a>
+</div>
