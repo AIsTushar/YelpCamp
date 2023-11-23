@@ -13,13 +13,11 @@ const campgroundController = require("../controllers/campgroundController");
 router
   .route("/")
   .get(campgroundController.getAllCampgrounds)
-  .post(campgroundController.createNewCampground);
-// .post(
-//   isLoggedIn,
-//   upload.array("image"),
-//   validateCampground,
-//   campgroundController.createNewCampground
-// );
+  .post(
+    isLoggedIn,
+    validateCampground,
+    campgroundController.createNewCampground
+  );
 
 // Get the new form for create a new campground
 router.get("/new", isLoggedIn, campgroundController.getNewCampgroundForm);

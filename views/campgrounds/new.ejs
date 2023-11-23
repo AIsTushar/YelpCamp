@@ -5,7 +5,7 @@
   <form
     action="/campgrounds"
     method="POST"
-    class="valoidated-form"
+    class="validated-form"
     enctype="multipart/form-data"
     novalidate
   >
@@ -15,7 +15,7 @@
       <input
         class="form-control"
         type="text"
-        name="campground[title]"
+        name="title"
         id="title"
         required
       />
@@ -26,7 +26,7 @@
       <input
         class="form-control"
         type="text"
-        name="campground[location]"
+        name="location"
         id="location"
         required
       />
@@ -38,7 +38,7 @@
       <input
         class="form-control"
         type="file"
-        name="campground[image]"
+        name="images"
         id="image"
         multiple
       />
@@ -51,7 +51,7 @@
         <input
           class="form-control"
           type="text"
-          name="campground[price]"
+          name="price"
           placeholder="0.00"
           id="price"
           aria-label="price-label"
@@ -67,7 +67,7 @@
         class="form-control"
         type="text"
         id="description"
-        name="campground[description]"
+        name="description"
         required
       ></textarea>
     </div>

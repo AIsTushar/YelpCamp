@@ -10,14 +10,53 @@ module.exports.getAllCampgrounds = catchAsync(async (req, res) => {
   res.render("campgrounds/index", { campgrounds: allCampgrounds });
 });
 
-// Get the new form for create a new campground
+/** Get the new form for create a new campground
+ *GET  /campgrounds/new
+ **/
 module.exports.getNewCampgroundForm = (req, res) => {
   res.render("campgrounds/new");
 };
 
-// CREATE NEW CAMPGROUND
+/** Create a new campground
+ *POST  /campgrounds/
+ **/
+//
 module.exports.createNewCampground = catchAsync(async (req, res) => {
-  res.send(req.files);
+  let uploadedFiles = req.files.images || [];
+
+  if (!Array.isArray(uploadedFiles)) {
+    uploadedFiles = [uploadedFiles];
+  }
+
+  const uploadedFileNames = [];
+
+  uploadedFiles.forEach((uploadedFile, index) => {
+    const fileName = `uploaded_file_${index}_${Date.now()}_${
+      uploadedFile.name
+    }`;
+    uploadedFileNames.push(fileName);
+
+    uploadedFile.mv(__dirname + "/../public/uploads/" + fileName, (err) => {
+      if (err) {
+        console.error("Error moving file:", err);
+        return res.status(500).send(err);
+      }
+    });
+  });
+
+  const newCampground = new Campground(req.body);
+
+  const images = uploadedFileNames.map((fileName) => ({
+    url: `/uploads/${fileName}`,
+    filename: fileName,
+  }));
+
+  newCampground.images = images;
+  newCampground.author = req.user._id;
+
+  const savedCampground = await newCampground.save();
+
+  res.redirect(`/campgrounds/${savedCampground._id}`);
 });
 
 // Get a single campground by id
@@ -49,7 +88,28 @@ module.exports.getCampgroundEditForm = catchAsync(async (req, res) => {
   res.render("campgrounds/edit", { campground });
 });
 
-// UPDATE CAMPGROUND
+/**   const uploadedFileNames = [];
+
+  uploadedFiles.forEach((uploadedFile, index) => {
+    const fileName = `uploaded_file_${index}_${Date.now()}_${
+      uploadedFile.name
+    }`;
+    uploadedFileNames.push(fileName);
+
+    uploadedFile.mv(__dirname + "/../public/uploads/" + fileName, (err) => {
+      if (err) {
+        console.error("Error moving file:", err);
+        return res.status(500).send(err);
+      }
+    });
+  });
+  
+  */
+
+/** Update a new campground
+ *PUT  /campgrounds/:id
+ **/
+//
 module.exports.updateCampground = catchAsync(async (req, res) => {
   const { id } = req.params;
   const campground = await Campground.findById(id);
@@ -61,6 +121,39 @@ module.exports.updateCampground = catchAsync(async (req, res) => {
   await Campground.findByIdAndUpdate(id, {
     ...req.body.campground,
   });
+
+  if (req.files) {
+    let uploadedFiles = req.files.images || [];
+
+    if (!Array.isArray(uploadedFiles)) {
+      uploadedFiles = [uploadedFiles];
+    }
+
+    const uploadedFileNames = [];
+
+    uploadedFiles.forEach((uploadedFile, index) => {
+      const fileName = `uploaded_file_${index}_${Date.now()}_${
+        uploadedFile.name
+      }`;
+      uploadedFileNames.push(fileName);
+
+      uploadedFile.mv(__dirname + "/../public/uploads/" + fileName, (err) => {
+        if (err) {
+          console.error("Error moving file:", err);
+          return res.status(500).send(err);
+        }
+      });
+    });
+
+    const images = uploadedFileNames.map((fileName) => ({
+      url: `/uploads/${fileName}`,
+      filename: fileName,
+    }));
+
+    campground.images.push(...images);
+
+    await campground.save();
+  }
 
   req.flash("success", "Successfully updated campground!");
   res.redirect(`/campgrounds/${campground._id}`);
