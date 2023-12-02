@@ -3,8 +3,6 @@
 
 <div class="row">
   <div class="col-6">
-    <!-- Test Start -->
-
     <div
       id="carouselExampleControls"
       class="carousel slide"
@@ -39,7 +37,6 @@
       <%}%>
     </div>
 
-    <!-- Test End -->
     <div class="card mb-3">
       <div class="card-body">
         <h5 class="card-title"><%= campground.title %></h5>
@@ -71,6 +68,8 @@
   </div>
 
   <div class="col-6">
+    <!-- Map -->
+    <div id="map"></div>
     <% if(currentUser) { %>
     <h2>Leave a Review</h2>
     <form
@@ -168,3 +167,10 @@
     <% }%>
   </div>
 </div>
+
+<script>
+  const mapToken = "<%- process.env.MAP_BOX_TOKEN  %>";
+  const campground = <%- JSON.stringify(campground) %>
+</script>
+
+<script src="/js/showPageMapBox.js"></script>

@@ -1,3 +1,8 @@
+// Mapbox config
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const mapBoxToken = process.env.MAP_BOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
+
 // Utils
 const catchAsync = require("../utils/catchAsync");
 
@@ -18,10 +23,17 @@ module.exports.getNewCampgroundForm = (req, res) => {
 };
 
 /** Create a new campground
- *POST  /campgrounds/
+ *POST  /campgrounds/ "Marine Drive Waterfall, Cox's Bazar"
  **/
 //
 module.exports.createNewCampground = catchAsync(async (req, res) => {
+  const geoData = await geocoder
+    .forwardGeocode({
+      query: req.body.location,
+      limit: 1,
+    })
+    .send();
+
   let uploadedFiles = req.files.images || [];
 
   if (!Array.isArray(uploadedFiles)) {
@@ -45,6 +57,7 @@ module.exports.createNewCampground = catchAsync(async (req, res) => {
   });
 
   const newCampground = new Campground(req.body);
+  newCampground.geometry = geoData.body.features[0].geometry;
 
   const images = uploadedFileNames.map((fileName) => ({
     url: `/uploads/${fileName}`,
@@ -59,7 +72,11 @@ module.exports.createNewCampground = catchAsync(async (req, res) => {
   res.redirect(`/campgrounds/${savedCampground._id}`);
 });
 
-// Get a single campground by id
+/** Get a single campground by id
+ *GET  /campgrounds/:id
+ **/
+//
+
 module.exports.getSingleCampground = catchAsync(async (req, res) => {
   const campground = await Campground.findById(req.params.id)
     .populate({

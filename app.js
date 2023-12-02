@@ -12,6 +12,9 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/userModel");
 
+// Dotenv
+dotenv.config({ path: "./config.env" });
+
 // Routes
 const campgroundRoutes = require("./routes/campgrundRoute");
 const reviewRoutes = require("./routes/reviewRoute");
@@ -27,8 +30,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(morgan("dev"));
 app.use(fileUpload());
 app.engine("ejs", ejsMate);
-
-dotenv.config({ path: "./config.env" });
 
 // connect to mongodb
 const DB = process.env.DATABASE.replace(
